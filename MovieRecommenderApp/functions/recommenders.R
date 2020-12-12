@@ -1,40 +1,35 @@
-
-# ============================================================
-# Functions used in implementation of movie recommendation.
-# ============================================================
-
 # load libraries
 library(data.table)
 library(dplyr)
 library(recommenderlab)
 
 
-# genre-based recommender
-genreRecommender <- function(movies, ratings, user_genre){
+# genre-based recommendation (Content Based Filtering)
+get_recommendations_by_genre_by_popularity <- function(movies, ratings, user_genre){
   # combine rating information into movies
-  mr = ratings %>% 
+  movieRating = ratings %>% 
     group_by(MovieID) %>% 
     summarize(ratings_per_movie = n(), ave_ratings = mean(Rating)) %>%
     inner_join(movies, by = 'MovieID')
   
-  # movies from selected genre
-  mr_sel = mr[grep(user_genre, mr$Genres),]
+  # Filter movies from selected genre
+  mr_selected = movieRating[grep(user_genre, movieRating$Genres),]
   
   # recommender based on popularity
-  recom_pop = arrange(mr_sel, desc(ratings_per_movie))
-  
-  recom_pop
+  recommendations = arrange(mr_selected, desc(ratings_per_movie))
+  recommendations
 }
 
 
-# UBCF recommender
+# UBCF recommender (User Based Colloborative Filtering)
 rateRecommender <- function(ratings, user_ratings){
   # fake UserID and Timestamp
   user_id = max(ratings$UserID) + 1
   user_ratings$UserID = user_id
-  user_ratings$Timestamp = 8824
+  user_ratings$Timestamp = 0887
   
   # combine user ratings into the rating dataframe
+  # create a utility matrix stored as a sparse matrix
   cr = rbind(ratings, as.data.frame(user_ratings))
   i = paste0('u', cr$UserID)
   j = paste0('m', cr$MovieID)
@@ -49,7 +44,7 @@ rateRecommender <- function(ratings, user_ratings){
   user_row = which(dimnames(Rmat)[[1]] %in% c(paste0('u', user_id)))
   
   # train the UBCF model
-  set.seed(8824)
+  set.seed(0887)
   recom_UBCF = Recommender(Rrmat[-user_row,], method='UBCF', parameter=list(normalize='Z-score',method='Cosine',nn=25))
   
   # predict top10 recommendations for user

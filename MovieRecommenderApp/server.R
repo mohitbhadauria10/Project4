@@ -117,7 +117,7 @@ shinyServer(function(input, output, session) {
       user_genre <- input$user_genre
       
       # run the genre-based recommender
-      recom_pop <- genreRecommender(movies, ratings, user_genre)
+      recom_pop <- get_recommendations_by_genre_by_popularity(movies, ratings, user_genre)
       
     }) # still busy
     

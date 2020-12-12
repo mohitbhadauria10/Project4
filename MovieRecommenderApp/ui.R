@@ -11,13 +11,13 @@ source('functions/helpers.R')
 shinyUI(
   dashboardPage(
     skin = "blue",
-    dashboardHeader(title = "Movie Recommender"),
+    dashboardHeader(title = "Movie Recommender App"),
     
     # add sidebar to allow toggel between the two recommender systems
     dashboardSidebar(
       sidebarMenu(
-        menuItem("Recommender by Genre", tabName = "rec_genre", icon = icon("film")),
-        menuItem("Recommender by Rating", tabName = "rec_rate", icon = icon("star"))
+        menuItem("Recommendation by Genre (Content Filtering)", tabName = "rec_genre", icon = icon("film")),
+        menuItem("Recommendation by Rating (Colloborative Filtering)", tabName = "rec_rate", icon = icon("star"))
       )
     ),
     
@@ -26,8 +26,8 @@ shinyUI(
                     # recommender by genre
                     tabItem(tabName = 'rec_genre',
                             fluidRow(
-                              box(width = 12, title = "Step 1: Select your favorite genre", status = "info", solidHeader = TRUE, collapsible = TRUE,
-                                  selectInput("user_genre", 'select a single genre from the dropdown menu', genre_list)
+                              box(width = 12, title = "Step 1: Select your Genre", status = "info", solidHeader = TRUE, collapsible = TRUE,
+                                  selectInput("user_genre", 'Select your favorite genre from the dropdown Menu', genre_list)
                               )
                             ),
                             fluidRow(
