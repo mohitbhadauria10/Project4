@@ -16,8 +16,8 @@ shinyUI(
     # add sidebar to allow toggel between the two recommender systems
     dashboardSidebar(
       sidebarMenu(
-        menuItem("Recommendation by Genre (Content Filtering)", tabName = "rec_genre", icon = icon("film")),
-        menuItem("Recommendation by Rating (Colloborative Filtering)", tabName = "rec_rate", icon = icon("star"))
+        menuItem("Recommendation by Genre", tabName = "rec_genre", icon = icon("film")),
+        menuItem("Recommendation by Rating", tabName = "rec_rate", icon = icon("star"))
       )
     ),
     
