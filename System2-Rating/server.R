@@ -84,8 +84,8 @@ ratings$Timestamp = NULL
 shinyServer(function(input, output, session) {
   
   output$urls <- renderUI({
-    content_based_url = a("Content-Based Filtering", href="https://mohits3.shinyapps.io/content_based_filtering")
-    collaborative_url = a("Collaborative Filtering", href="https://mohits3.shinyapps.io/collaborative_filtering")
+    content_based_url = a("Content-Based Filtering", href="https://mohits3.shinyapps.io/system1-genre/")
+    collaborative_url = a("Collaborative Filtering", href="https://mohits3.shinyapps.io/system2-rating/")
     div(
       tagList("System I: ", content_based_url),
       br(),
