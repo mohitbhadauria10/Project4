@@ -6,7 +6,6 @@ output:
     df_print: paged
 ---
 
-
 ## Introduction
 
 In this project, we have designed a recommender system which recommends movie to its Users. We have worked on below 3 usecases.
@@ -179,34 +178,36 @@ colnames(ratings) = c('UserID', 'MovieID', 'Rating', 'Timestamp')
 ```
 
 
-#### Create Train and Test Dataset
-```{r}
-set.seed(100)
-train.id = sample(nrow(ratings), floor(nrow(ratings)) * 0.8)
-train = ratings[train.id, ]
-#head(train)
-
-test = ratings[-train.id, ]
-label = test[c('UserID', 'Rating')]
-test$Rating = NA
-#head(test)
-
-```
 
 #### Build two Models to predict the Movie Rating For Each User-Movie Pair in the Test Data
+#### Create Train and Test Dataset for each iteration
+#### Iterate the process for 10 times
 #### Create Utility Matrix stored as Sparse Matrix
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
+set.seed(100)
 models = list(
   UBCF = list(normalize = 'Z-score', method = 'cosine', nn = 5),
   SVDF = list(normalize = 'Z-score')
 )
+
 start.time = Sys.time()
+rmse_data = data.frame()
+iterations = 10
+
+for (i in 1:iterations) {
+  
+# Train and test data  
+train.id = sample(nrow(ratings), floor(nrow(ratings)) * 0.8)
+train = ratings[train.id, ]
+
+test = ratings[-train.id, ]
+label = test[c('UserID', 'Rating')]
+test$Rating = NA
+
 R = acast(train, UserID ~ MovieID, value.var = 'Rating')
 R = as(R, 'realRatingMatrix')
 rmses = rep(0, length(models))
-names(rmses) = names(models)
-
 
 for (m in 1:length(models)) {
   rec = Recommender(R, method = names(models)[m],
@@ -226,14 +227,17 @@ for (m in 1:length(models)) {
   
   rmses[m] = RMSE(test$Rating, label$Rating)
 }
+rmse_data =  rbind(rmse_data, rmses) 
+
+}
+colnames(rmse_data) <- c("UBCF", "SVDF")
 end.time = Sys.time()
 run.time = as.numeric(difftime(end.time, start.time, units = 'secs'))
 ```
 
 
-
 ## RMSE of Models (UBCF and SVDF)
-```{r, echo=FALSE, eval=TRUE}
-print(rmses)
+```{r, echo=FALSE, eval=TRUE,warning=FALSE, message=FALSE}
+knitr::kable(rmse_data, align = "cc")
 ```
 

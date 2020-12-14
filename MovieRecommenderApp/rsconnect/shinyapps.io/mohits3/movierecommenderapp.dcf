@@ -5,6 +5,6 @@ account: mohits3
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3390988
-bundleId: 3977916
+bundleId: 3977981
 url: https://mohits3.shinyapps.io/movierecommenderapp/
-when: 1607741092.62987
+when: 1607742348.79526

@@ -1914,6 +1914,9 @@ kable(recom_pop,format = 'markdown')</code></pre>
 <li>parameter: normalize = ‘Z-score’, method = ‘cosine’, nn = 5<br />
 </li>
 <li>The parameter <em>method</em> is set to <em>UBCF</em> .The similarity method used is <em>cosine</em> similarity and 5 nearest neighbours are used.</li>
+<li>$nn$ - determines how many users will be aggregated (nearest neighbors) to make a prediction. For our evaluation, we will use $nn=5$.</li>
+<li>Similarity Measure - determines the distance metric between the users. For our evaluation, we will use the Cosine similarity measure.</li>
+<li>Normalize - determines the normalization method used to remove individual rating bias. For our evaluation, we will use the Z-score formula.</li>
 </ul>
 </div>
 <div id="svdf-funk-svd-with-gradient-descend" class="section level4">
@@ -1933,33 +1936,40 @@ ratings = read.csv(paste0(myurl, 'ratings.dat?raw=true'),
                    header = FALSE)
 colnames(ratings) = c('UserID', 'MovieID', 'Rating', 'Timestamp')</code></pre>
 </div>
-<div id="create-train-and-test-dataset" class="section level4">
-<h4>Create Train and Test Dataset</h4>
+<div id="build-two-models-to-predict-the-movie-rating-for-each-user-movie-pair-in-the-test-data" class="section level4">
+<h4>Build two Models to predict the Movie Rating For Each User-Movie Pair in the Test Data</h4>
+</div>
+<div id="create-train-and-test-dataset-for-each-iteration" class="section level4">
+<h4>Create Train and Test Dataset for each iteration</h4>
+</div>
+<div id="iterate-the-process-for-10-times" class="section level4">
+<h4>Iterate the process for 10 times</h4>
+</div>
+<div id="create-utility-matrix-stored-as-sparse-matrix" class="section level4">
+<h4>Create Utility Matrix stored as Sparse Matrix</h4>
 <pre class="r"><code>set.seed(100)
+models = list(
+  UBCF = list(normalize = 'Z-score', method = 'cosine', nn = 5),
+  SVDF = list(normalize = 'Z-score')
+)
+
+start.time = Sys.time()
+rmse_data = data.frame()
+iterations = 10
+
+for (i in 1:iterations) {
+  
+# Train and test data  
 train.id = sample(nrow(ratings), floor(nrow(ratings)) * 0.8)
 train = ratings[train.id, ]
-#head(train)
 
 test = ratings[-train.id, ]
 label = test[c('UserID', 'Rating')]
 test$Rating = NA
-#head(test)</code></pre>
-</div>
-<div id="build-two-models-to-predict-the-movie-rating-for-each-user-movie-pair-in-the-test-data" class="section level4">
-<h4>Build two Models to predict the Movie Rating For Each User-Movie Pair in the Test Data</h4>
-</div>
-<div id="create-utility-matrix-stored-as-sparse-matrix" class="section level4">
-<h4>Create Utility Matrix stored as Sparse Matrix</h4>
-<pre class="r"><code>models = list(
-  UBCF = list(normalize = 'Z-score', method = 'cosine', nn = 5),
-  SVDF = list(normalize = 'Z-score')
-)
-start.time = Sys.time()
+
 R = acast(train, UserID ~ MovieID, value.var = 'Rating')
 R = as(R, 'realRatingMatrix')
 rmses = rep(0, length(models))
-names(rmses) = names(models)
-
 
 for (m in 1:length(models)) {
   rec = Recommender(R, method = names(models)[m],
@@ -1979,6 +1989,10 @@ for (m in 1:length(models)) {
   
   rmses[m] = RMSE(test$Rating, label$Rating)
 }
+rmse_data =  rbind(rmse_data, rmses) 
+
+}
+colnames(rmse_data) &lt;- c(&quot;UBCF&quot;, &quot;SVDF&quot;)
 end.time = Sys.time()
 run.time = as.numeric(difftime(end.time, start.time, units = 'secs'))</code></pre>
 </div>
@@ -1986,6 +2000,56 @@ run.time = as.numeric(difftime(end.time, start.time, units = 'secs'))</code></pr
 </div>
 <div id="rmse-of-models-ubcf-and-svdf" class="section level2">
 <h2>RMSE of Models (UBCF and SVDF)</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="center">UBCF</th>
+<th align="center">SVDF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1.511835</td>
+<td align="center">0.8638043</td>
+</tr>
+<tr class="even">
+<td align="center">1.510647</td>
+<td align="center">0.8641726</td>
+</tr>
+<tr class="odd">
+<td align="center">1.512854</td>
+<td align="center">0.8656016</td>
+</tr>
+<tr class="even">
+<td align="center">1.509489</td>
+<td align="center">0.8628956</td>
+</tr>
+<tr class="odd">
+<td align="center">1.511246</td>
+<td align="center">0.8640689</td>
+</tr>
+<tr class="even">
+<td align="center">1.509944</td>
+<td align="center">0.8650502</td>
+</tr>
+<tr class="odd">
+<td align="center">1.508493</td>
+<td align="center">0.8637260</td>
+</tr>
+<tr class="even">
+<td align="center">1.510246</td>
+<td align="center">0.8640589</td>
+</tr>
+<tr class="odd">
+<td align="center">1.510835</td>
+<td align="center">0.8650302</td>
+</tr>
+<tr class="even">
+<td align="center">1.511635</td>
+<td align="center">0.8646043</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

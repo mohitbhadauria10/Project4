@@ -2,8 +2,10 @@
 
 This is code for a shiny app for a movie recommender based on User Based Collaborative filtering. 
 
-Link to demo:
- https://mohits3.shinyapps.io/movierecommenderapp/
+Link to Shiny App demo:
+https://mohits3.shinyapps.io/movierecommenderapp/
+
+RMarkDown File/HTML
  
  
 # Team 
