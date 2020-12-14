@@ -8,6 +8,7 @@ https://mohits3.shinyapps.io/movierecommenderapp/
 ## RMarkDown File/.RMD
 HTML Markdown File:
 https://github.com/mohitbhadauria10/Project4/blob/master/Project4.Rmd
+https://github.com/mohitbhadauria10/Project4/blob/master/Project4.html
 
  
 # Team 
