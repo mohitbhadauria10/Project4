@@ -17,6 +17,7 @@ Kamlesh (kamlesh2)
 
 # Resources
 
-pspachtholz/BookRecommender [Github_link]
-Movielense Data: Exploratory Data Analysis [link]
-recommenderlab: A Framework for Developing and Testing Recommendation Algorithms [pdf]
+- pspachtholz/BookRecommender
+    -(https://github.com/pspachtholz/BookRecommender)
+- Movielense Data: Exploratory Data Analysis (https://liangfgithub.github.io/Rcode_W13_Movie_EDA.nb.html)
+- recommenderlab: A Framework for Developing and Testing Recommendation Algorithms
